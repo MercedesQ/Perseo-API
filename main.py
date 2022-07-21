@@ -5,5 +5,3 @@ from rutas.cliente_rutas import cliente
 app = FastAPI() 
 
 app.include_router(cliente)
-
-#Prueba de cambio
