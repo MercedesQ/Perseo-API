@@ -2,8 +2,8 @@
 # OPTENER SECUENCIALES INTERNOS
 
 def ObtenerSecuecial(sTabla, conexion):
+    # consulta de la secuencia
     sql = "SELECT * from secuenciales where secuencial = '%s' "
-
     resulS = conexion.execute(sql % (sTabla)).first()
 
     numero = str(resulS['valor'])
@@ -12,6 +12,7 @@ def ObtenerSecuecial(sTabla, conexion):
 
     valor = resulS['valor'] + 1
 
+    # actualizacion de la secuencia
     sql2 = "UPDATE secuenciales SET valor = %d where secuencial = '%s'"
     result2 = conexion.execute(sql2 % (valor, sTabla))
 

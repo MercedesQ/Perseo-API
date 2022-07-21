@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
-from starlette.status import HTTP_201_CREATED, HTTP_500_INTERNAL_SERVER_ERROR
+from starlette.status import HTTP_201_CREATED
 from esquemas.clientes_esquema import ClientesEsquema
 from esquemas.parametros_empresa_esquema import Parametros_Empresa_Esquema
 from configuracion.db import engine
@@ -17,23 +17,24 @@ cliente = APIRouter()
 # pendiente de revisar
 
 
-def ValidarExistenciaCliente(self, Conexion, identificacion, idCliente):
+def ValidarExistenciaCliente(Conexion, identificacion, Clienteid):
 
     if len(identificacion) == 10:
-        ruc = identificacion+"001"
+        cedularuc = identificacion+"001"
 
     if len(identificacion) == 13:
-        cedula = identificacion[10:len(identificacion)]
+        cedularuc = identificacion[10:len(identificacion)]
 
-    if idCliente == None:
-        sql = "SELECT identificacion, razonsocial FROM clientes WHERE identificacion=%s"
+    if Clienteid == None:
+        sql = "SELECT clientesid, identificacion, clientescodigo FROM clientes WHERE (identificacion='%s' or identificacion='%s')"
+        resultado = Conexion.execute(sql % (identificacion, cedularuc)).first()
 
-    if idCliente != None:
-        sql = "SELECT identificacion, razonsocial FROM clientes WHERE identificacion=%s AND clientesid <> %s"
+    if Clienteid != None:
+        sql = "SELECT clientesid, identificacion, clientescodigo FROM clientes WHERE (identificacion='%s' or identificacion='%s') AND clientesid <> %s"
+        resultado = Conexion.execute(
+            sql % (identificacion, cedularuc, Clienteid)).first()
 
-    parametros = (identificacion, idCliente)
-
-    resultado = Conexion.execute(sql, parametros).first()
+    return resultado
 
 
 @cliente.post("/api/cliente", status_code=HTTP_201_CREATED)
@@ -43,41 +44,45 @@ def crear_cliente(datos_cliente: ClientesEsquema):
         session.begin()
         try:
             nuevo_cliente = datos_cliente.dict()
-            # Consultas.ValidarExistenciaCliente(
-            # nuevo_cliente['identificacion'], nuevo_cliente['clientesid'])
-            # llama a la funcion para obtener el codigo del cliente
-            tabla = 'CLIENTES'
-            secuencia = ObtenerSecuecial(tabla, session)
-            print(secuencia)
-            # secuencia = Consultas.actualizarSecuencial(15,"CLIENTES")
-            nuevo_cliente['clientescodigo'] = secuencia
-            if secuencia in [None, '', 0]:
-                nuevo_cliente['clientescodigo'] = nuevo_cliente['identificacion']
+            existenciaclientes = ValidarExistenciaCliente(
+                session, nuevo_cliente['identificacion'], nuevo_cliente['clientesid'])
 
-            # obtener los datos de parametros de empresa
-            parametro_empresa = session.execute(
-                parametros_empresa.select()).first()
+            # print(existenciaclientes)
+            if existenciaclientes == None:
+                # llama a la funcion para obtener el codigo del cliente
+                secuencia = ObtenerSecuecial('CLIENTES', session)
+                nuevo_cliente['clientescodigo'] = secuencia
+                print(secuencia)
+                # obtener los datos de parametros de empresa
+                parametro_empresa = session.execute(
+                    parametros_empresa.select()).first()
 
-            # validaciones de campos requeridos
-            if nuevo_cliente['codigocontable'] in [None, '', 0]:
-                nuevo_cliente['codigocontable'] = parametro_empresa['codigocontable_clientes']
+                ###########################################################################
+                # validacion de campos vacíos
+                if secuencia in [None, '', 0]:
+                    nuevo_cliente['clientescodigo'] = nuevo_cliente['identificacion']
 
-            if nuevo_cliente['provinciasid'] in [None, '', 0]:
-                nuevo_cliente['provinciasid'] = parametro_empresa['provinciasid']
+                if nuevo_cliente['codigocontable'] in [None, '', 0]:
+                    nuevo_cliente['codigocontable'] = parametro_empresa['codigocontable_clientes']
 
-            if nuevo_cliente['ciudadesid'] in [None, '', 0]:
-                nuevo_cliente['ciudadesid'] = parametro_empresa['ciudadesid']
+                if nuevo_cliente['provinciasid'] in [None, '', 0]:
+                    nuevo_cliente['provinciasid'] = parametro_empresa['provinciasid']
 
-            if nuevo_cliente['parroquiasid'] in [None, '', 0]:
-                nuevo_cliente['parroquiasid'] = parametro_empresa['parroquiasid']
+                if nuevo_cliente['ciudadesid'] in [None, '', 0]:
+                    nuevo_cliente['ciudadesid'] = parametro_empresa['ciudadesid']
 
-            # session.execute(clientes.insert().values(nuevo_cliente))
-            session.commit()
+                if nuevo_cliente['parroquiasid'] in [None, '', 0]:
+                    nuevo_cliente['parroquiasid'] = parametro_empresa['parroquiasid']
 
-            fintiempo = time() - start_time
-            print(fintiempo)
+                session.execute(clientes.insert().values(nuevo_cliente))
+                session.commit()
 
-            return JSONResponse(status_code=HTTP_201_CREATED, content={"clientesid_viejo": nuevo_cliente['clientesid'], "clientesid_nuevo": 203, "clientes_codigo": "CL00000196"}, media_type="application/json")
+                fintiempo = time() - start_time
+                print(fintiempo)
+
+                return JSONResponse(status_code=HTTP_201_CREATED, content={"clientes": [{"clientesid_viejo": nuevo_cliente['clientesid'], "clientesid_nuevo": existenciaclientes['clientesid'], "clientes_codigo": secuencia}]}, media_type="application/json")
+            else:
+                return JSONResponse(status_code=HTTP_201_CREATED, content={"clientes": [{"clientesid_viejo": nuevo_cliente['clientesid'], "clientesid_nuevo": existenciaclientes['clientesid'], "clientes_codigo": existenciaclientes['clientescodigo'], "observacion":"Ya exite el cliente"}]}, media_type="application/json")
 
         except Exception as e:
             session.rollback()
