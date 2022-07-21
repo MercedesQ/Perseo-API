@@ -41,14 +41,12 @@ def crear_cliente(datos_cliente: ClientesEsquema):
         session.begin()
         try:
             nuevo_cliente = datos_cliente.dict()
-            print(nuevo_cliente)
             # Consultas.ValidarExistenciaCliente(
             # nuevo_cliente['identificacion'], nuevo_cliente['clientesid'])
             # print(nuevo_cliente)
             # llama a la funcion para obtener el codigo del cliente
             secuencia = ObtenerSecuecial("CLIENTES", session)
             # secuencia = Consultas.actualizarSecuencial(15,"CLIENTES")
-            print(secuencia)
             nuevo_cliente['clientescodigo'] = secuencia
             if secuencia in [None, '', 0]:
                 nuevo_cliente['clientescodigo'] = nuevo_cliente['identificacion']
