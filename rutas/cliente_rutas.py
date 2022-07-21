@@ -17,22 +17,21 @@ cliente = APIRouter()
 # pendiente de revisar
 def ValidarExistenciaCliente(self, Conexion, identificacion, idCliente):
 
-           if len(identificacion) == 10:
-                ruc = identificacion+"001"
+    if len(identificacion) == 10:
+        ruc = identificacion+"001"
 
-            if len(identificacion) == 13:
-                cedula = identificacion[10:len(identificacion)]
+    if len(identificacion) == 13:
+        cedula = identificacion[10:len(identificacion)]
 
-            if idCliente == None:
-                sql = "SELECT identificacion, razonsocial FROM clientes WHERE identificacion=%s"
+    if idCliente == None:
+        sql = "SELECT identificacion, razonsocial FROM clientes WHERE identificacion=%s"
 
-            if idCliente != None:
-                sql = "SELECT identificacion, razonsocial FROM clientes WHERE identificacion=%s AND clientesid <> %s"
+    if idCliente != None:
+        sql = "SELECT identificacion, razonsocial FROM clientes WHERE identificacion=%s AND clientesid <> %s"
 
-            parametros = (identificacion, idCliente)
+    parametros = (identificacion, idCliente)
 
-            resultado = Conexion.execute(sql, parametros).first()
-
+    resultado = Conexion.execute(sql, parametros).first()
 
 
 @cliente.post("/api/cliente", status_code=HTTP_201_CREATED)
@@ -47,7 +46,7 @@ def crear_cliente(datos_cliente: ClientesEsquema):
             # nuevo_cliente['identificacion'], nuevo_cliente['clientesid'])
             # print(nuevo_cliente)
             # llama a la funcion para obtener el codigo del cliente
-            secuencia = ObtenerSecuecial("CLIENTES",session)
+            secuencia = ObtenerSecuecial("CLIENTES", session)
             # secuencia = Consultas.actualizarSecuencial(15,"CLIENTES")
             print(secuencia)
             nuevo_cliente['clientescodigo'] = secuencia

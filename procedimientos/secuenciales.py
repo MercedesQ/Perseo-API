@@ -6,7 +6,7 @@ from configuracion.db import engine
 def ObtenerSecuecial(sTabla, Conexion):
     sql = "SELECT * from secuenciales where secuencial = '%s' "
 
-    resulS = Conexion.execute(sql % (tabla)).first()
+    resulS = Conexion.execute(sql % (sTabla)).first()
 
     numero = str(resulS['valor'])
     secuencia = str(
@@ -15,7 +15,7 @@ def ObtenerSecuecial(sTabla, Conexion):
     valor = resulS['valor'] + 1
 
     sql = "UPDATE secuenciales SET secuenciales.valor = %s where secuenciales.secuencial = %s"
-    parametros = (valor, tabla)
+    parametros = (valor, sTabla)
     Conexion.execute(sql, parametros)
 
     return secuencia
