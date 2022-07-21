@@ -12,9 +12,11 @@ from procedimientos.secuenciales import ObtenerSecuecial
 
 
 cliente = APIRouter()
-
+#Secuencia = Secuenciales()
 
 # pendiente de revisar
+
+
 def ValidarExistenciaCliente(self, Conexion, identificacion, idCliente):
 
     if len(identificacion) == 10:
@@ -43,9 +45,10 @@ def crear_cliente(datos_cliente: ClientesEsquema):
             nuevo_cliente = datos_cliente.dict()
             # Consultas.ValidarExistenciaCliente(
             # nuevo_cliente['identificacion'], nuevo_cliente['clientesid'])
-            # print(nuevo_cliente)
             # llama a la funcion para obtener el codigo del cliente
-            secuencia = ObtenerSecuecial("CLIENTES", session)
+            tabla = 'CLIENTES'
+            secuencia = ObtenerSecuecial(tabla, session)
+            print(secuencia)
             # secuencia = Consultas.actualizarSecuencial(15,"CLIENTES")
             nuevo_cliente['clientescodigo'] = secuencia
             if secuencia in [None, '', 0]:
@@ -74,7 +77,7 @@ def crear_cliente(datos_cliente: ClientesEsquema):
             fintiempo = time() - start_time
             print(fintiempo)
 
-            return JSONResponse(status_code=HTTP_201_CREATED, content={"clientesid_viejo": 1, "clientesid_nuevo": 203, "clientes_codigo": "CL00000196"}, media_type="application/json")
+            return JSONResponse(status_code=HTTP_201_CREATED, content={"clientesid_viejo": nuevo_cliente['clientesid'], "clientesid_nuevo": 203, "clientes_codigo": "CL00000196"}, media_type="application/json")
 
         except Exception as e:
             session.rollback()
