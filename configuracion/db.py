@@ -7,4 +7,4 @@ engine = create_engine("mariadb+pymysql://root:Alfayomega1232*@localhost:5588/10
 meta_data = MetaData()
 
 
-
+#hola maldito mundo cruel
