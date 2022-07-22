@@ -12,9 +12,6 @@ from procedimientos.secuenciales import ObtenerSecuecial
 
 
 cliente = APIRouter()
-#Secuencia = Secuenciales()
-
-# pendiente de revisar
 
 
 def ValidarExistenciaCliente(Conexion, identificacion, Clienteid):
