@@ -78,7 +78,7 @@ def crear_cliente(datos_cliente: clientes_esquema):
                 fintiempo = time() - start_time
                 print(fintiempo)
 
-                return JSONResponse(status_code=HTTP_201_CREATED, content={"clientes": [{"clientesid_viejo": "", "clientesid_nuevo": "", "clientes_codigo": secuencia}]}, media_type="application/json")
+                return JSONResponse(status_code=HTTP_201_CREATED, content={"clientes": [{"clientesid_viejo": "", "clientesid_nuevo": "", "clientes_codigo": secuencia, "tiempo": str(fintiempo)}]}, media_type="application/json")
             else:
                 return JSONResponse(status_code=HTTP_201_CREATED, content={"clientes": [{"clientesid_viejo": nuevo_cliente['clientesid'], "clientesid_nuevo": existenciaclientes['clientesid'], "clientes_codigo": existenciaclientes['clientescodigo'], "observacion":"Ya exite el cliente"}]}, media_type="application/json")
 
