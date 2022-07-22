@@ -4,18 +4,16 @@ from pydantic import BaseModel
 from typing import Optional
 
 
+class clientes_esquema(BaseModel):
 
-class ClientesEsquema(BaseModel):
-
-   
     clientesid: Optional[str]
     clientescodigo: Optional[str]
-    codigocontable: Optional[str] 
+    codigocontable: Optional[str]
     clientes_gruposid: int
-    provinciasid: Optional[str] 
-    ciudadesid: Optional[str] 
+    provinciasid: Optional[str]
+    ciudadesid: Optional[str]
     razonsocial: str
-    parroquiasid: Optional[str] 
+    parroquiasid: Optional[str]
     clientes_zonasid: int
     nombrecomercial: str
     direccion: str
