@@ -2,10 +2,10 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_201_CREATED
-from esquemas.clientes_esquema import ClientesEsquema
+from esquemas.clientes_esquema import clientes_esquema
 from esquemas.parametros_empresa_esquema import Parametros_Empresa_Esquema
 from configuracion.db import engine
-from modelos.clientes_modelo import clientes
+from modelos.clientes_modelo import clientes_modelo
 from modelos.paramentros_empresa import parametros_empresa
 from time import time
 from procedimientos.secuenciales import ObtenerSecuecial
@@ -35,7 +35,7 @@ def ValidarExistenciaCliente(Conexion, identificacion, Clienteid):
 
 
 @cliente.post("/api/cliente", status_code=HTTP_201_CREATED)
-def crear_cliente(datos_cliente: ClientesEsquema):
+def crear_cliente(datos_cliente: clientes_esquema):
     start_time = time()
     with Session(engine) as session:
         session.begin()
@@ -72,7 +72,7 @@ def crear_cliente(datos_cliente: ClientesEsquema):
                     nuevo_cliente['parroquiasid'] = parametro_empresa['parroquiasid']
 
                 resultado = session.execute(
-                    clientes.insert().values(nuevo_cliente))
+                    clientes_modelo.insert().values(nuevo_cliente))
                 session.commit()
 
                 fintiempo = time() - start_time
