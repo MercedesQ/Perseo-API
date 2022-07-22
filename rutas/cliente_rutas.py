@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_201_CREATED
-from esquemas.clientes_esquema import ClientesEsquema
+from esquemas.clientes_esquema import clientes_esquema
 from esquemas.parametros_empresa_esquema import Parametros_Empresa_Esquema
 from configuracion.db import engine
 from modelos.clientes_modelo import clientes
