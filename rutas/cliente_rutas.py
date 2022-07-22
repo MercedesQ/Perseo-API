@@ -35,7 +35,7 @@ def ValidarExistenciaCliente(Conexion, identificacion, Clienteid):
 
 
 @cliente.post("/api/cliente", status_code=HTTP_201_CREATED)
-def crear_cliente(datos_cliente: ClientesEsquema):
+def crear_cliente(datos_cliente: clientes_esquema):
     start_time = time()
     with Session(engine) as session:
         session.begin()
@@ -71,7 +71,7 @@ def crear_cliente(datos_cliente: ClientesEsquema):
                 if nuevo_cliente['parroquiasid'] in [None, '', 0]:
                     nuevo_cliente['parroquiasid'] = parametro_empresa['parroquiasid']
 
-                session.execute(clientes.insert().values(nuevo_cliente))
+                session.execute(clientes_modelo.insert().values(nuevo_cliente))
                 session.commit()
 
                 fintiempo = time() - start_time
