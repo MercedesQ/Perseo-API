@@ -12,9 +12,6 @@ from procedimientos.secuenciales import ObtenerSecuecial
 
 
 cliente = APIRouter()
-#Secuencia = Secuenciales()
-
-# pendiente de revisar
 
 
 def ValidarExistenciaCliente(Conexion, identificacion, Clienteid):
@@ -52,7 +49,7 @@ def crear_cliente(datos_cliente: ClientesEsquema):
                 # llama a la funcion para obtener el codigo del cliente
                 secuencia = ObtenerSecuecial('CLIENTES', session)
                 nuevo_cliente['clientescodigo'] = secuencia
-                print(secuencia)
+
                 # obtener los datos de parametros de empresa
                 parametro_empresa = session.execute(
                     parametros_empresa.select()).first()
@@ -74,13 +71,14 @@ def crear_cliente(datos_cliente: ClientesEsquema):
                 if nuevo_cliente['parroquiasid'] in [None, '', 0]:
                     nuevo_cliente['parroquiasid'] = parametro_empresa['parroquiasid']
 
-                session.execute(clientes.insert().values(nuevo_cliente))
+                resultado = session.execute(
+                    clientes.insert().values(nuevo_cliente))
                 session.commit()
 
                 fintiempo = time() - start_time
                 print(fintiempo)
 
-                return JSONResponse(status_code=HTTP_201_CREATED, content={"clientes": [{"clientesid_viejo": nuevo_cliente['clientesid'], "clientesid_nuevo": existenciaclientes['clientesid'], "clientes_codigo": secuencia}]}, media_type="application/json")
+                return JSONResponse(status_code=HTTP_201_CREATED, content={"clientes": [{"clientesid_viejo": "", "clientesid_nuevo": "", "clientes_codigo": secuencia}]}, media_type="application/json")
             else:
                 return JSONResponse(status_code=HTTP_201_CREATED, content={"clientes": [{"clientesid_viejo": nuevo_cliente['clientesid'], "clientesid_nuevo": existenciaclientes['clientesid'], "clientes_codigo": existenciaclientes['clientescodigo'], "observacion":"Ya exite el cliente"}]}, media_type="application/json")
 

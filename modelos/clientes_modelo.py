@@ -44,3 +44,11 @@ clientes = Table("clientes", meta_data, Column("clientesid", Integer, primary_ke
                  Column("usuariocreacion", String(25), nullable=False),
                  Column("fechacreacion", DateTime, nullable=False)
                  )
+
+
+clientes_imagenes = Table("clientes_imagenes", meta_data, Column("clientes_imagenesid", Integer, primary_key=True),
+                          Column("clientesid", Integer, ForeignKey(
+                              "clientes.clientesid"), nullable=False),
+                          Column("principal", Integer, nullable=True),
+                          Column("imagen", String, nullable=True),
+                          )
