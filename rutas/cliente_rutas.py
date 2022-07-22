@@ -5,7 +5,7 @@ from starlette.status import HTTP_201_CREATED
 from esquemas.clientes_esquema import clientes_esquema
 from esquemas.parametros_empresa_esquema import Parametros_Empresa_Esquema
 from configuracion.db import engine
-from modelos.clientes_modelo import clientes
+from modelos.clientes_modelo import clientes_modelo
 from modelos.paramentros_empresa import parametros_empresa
 from time import time
 from procedimientos.secuenciales import ObtenerSecuecial
